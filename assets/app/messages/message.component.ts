@@ -1,4 +1,4 @@
-import {Component} from "angular2/core";
+import {Component, Input, Output, EventEmitter} from "angular2/core";
 import {Message} from "./message"
 
 @Component({
@@ -13,7 +13,7 @@ import {Message} from "./message"
 							{{ message.username }}
 						</div>
 						<div class="config">
-							<a href="#">Edit</a>
+							<a href="#" (click)="onClick()">Edit</a>
 							<a href="#">Delete</a>
 						</div>
 					</footer>
@@ -36,5 +36,10 @@ import {Message} from "./message"
 })
 
 export class MessageComponent {
-	message: Message = new Message('The content', null, 'Max');
+	@Input() message: Message;
+	@Output() editClicked = new EventEmitter<string>();
+	 
+	onClick() {
+		this.editClicked.emit('Changed');
+	}
 }
