@@ -4,7 +4,7 @@ import {Message} from "./message"
 @Component({
 	selector: 'my-message',
 	template: `
-				<article class="panel panel-default">
+				<article class="panel panel-default" *ngIf="show">
 					<div class="panel-body">
 						{{ message.content }}
 					</div>
@@ -38,6 +38,7 @@ import {Message} from "./message"
 export class MessageComponent {
 	@Input() message: Message;
 	@Output() editClicked = new EventEmitter<string>();
+	show = true;
 	 
 	onClick() {
 		this.editClicked.emit('Changed');
