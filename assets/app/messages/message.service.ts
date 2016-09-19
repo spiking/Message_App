@@ -1,4 +1,7 @@
 import {Message} from "./message";
+
+// Encapsulates all non-user-interface logic.
+
 export class MessageService {
 	messages: Message[] = [];
 	
