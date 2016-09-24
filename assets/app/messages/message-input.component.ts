@@ -25,7 +25,10 @@ export class MessageInputComponent {
 	onSubmit(form:any) {
 		const message: Message = new Message(form.content, null, 'Dummy User');
 		this._messageService.addMessage(message).subscribe(
-            data => console.log(data),
+            data => {
+                console.log(data);
+                this._messageService.messages.push(data); // Push instantly to view, doesnt require reload
+            },
             error => console.error(error)
         );
 	}

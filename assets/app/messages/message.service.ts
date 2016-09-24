@@ -12,17 +12,31 @@ export class MessageService {
         
     }
 	
-	addMessage(message: Message) {
-        // Turn msg object to string
+    addMessage(message: Message) {
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type': 'application/json'});
-        // Observable, configured but not sent
-        return this._http.post('http://localhost:3000/message', body, {headers: headers}).map(response => response.json()).catch(error => Observable.throw(error.json()));
-	}
+        return this._http.post('http://localhost:3000/message', body, {headers: headers})
+            .map(response => {
+                const data = response.json().obj;
+                let message = new Message(data.content, data._id, 'Dummy', null);
+                return message;
+            })
+            .catch(error => Observable.throw(error.json()));
+    }
 	
-	getMessages() {
-		return this.messages;
-	}
+    getMessages() {
+        return this._http.get('http://localhost:3000/message')
+            .map(response => {
+                const data = response.json().obj;
+                let objs: any[] = [];
+                for (let i = 0; i < data.length; i++) {
+                    let message = new Message(data[i].content, data[i]._id, 'Dummy', null);
+                    objs.push(message);
+                }
+                return objs;
+            })
+            .catch(error => Observable.throw(error.json()));
+    }
 
 	editMessage(message: Message) {
 		this.messages[this.messages.indexOf(message)] = new Message('Edited', null, 'Dummy User');
