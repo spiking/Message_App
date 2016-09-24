@@ -13,6 +13,7 @@ export class MessageService {
     addMessage(message: Message) {
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type': 'application/json'});
+        
         return this._http.post('http://localhost:3000/message', body, {headers: headers})
             .map(response => {
                 const data = response.json().obj;
@@ -40,6 +41,7 @@ export class MessageService {
     updateMessage(message: Message) {
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type': 'application/json'});
+        
         return this._http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: headers})
             .map(response => response.json())
             .catch(error => Observable.throw(error.json()));
@@ -51,6 +53,7 @@ export class MessageService {
 
     deleteMessage(message: Message) {
         this.messages.splice(this.messages.indexOf(message), 1);
+        
         return this._http.delete('http://localhost:3000/message/' + message.messageId)
             .map(response => response.json())
             .catch(error => Observable.throw(error.json()));

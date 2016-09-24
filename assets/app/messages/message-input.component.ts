@@ -8,7 +8,7 @@ import {MessageService} from "./message.service";
             <form (ngSubmit)="onSubmit(f.value)" #f="ngForm">
                 <div class="form-group">
                     <label for="content">Content</label>
-                    <input ngControl="content" type="text" class="form-control" id="content" #input [value]="message?.content">
+                    <input ngControl="content" type="text" class="form-control" id="content" #input [ngModel]="message?.content">
                 </div>
                 <button type="submit" class="btn btn-primary">{{ !message ? 'Send Message' : 'Save Message' }}</button>
                 <button type="button" class="btn btn-danger" (click)="onCancel()" *ngIf="message">Cancel</button>
@@ -23,15 +23,17 @@ export class MessageInputComponent implements OnInit {
 
     onSubmit(form:any) {
         if (this.message) {
-            // Edit
-            this.message.content = form.content; // Change field object
+            // Edit msg, change field object
+            this.message.content = form.content; 
             this._messageService.updateMessage(this.message)
                 .subscribe(
                     data => console.log(data),
                     error => console.error(error)
                 );
-            this.message = null; // New object on property
+            // New object on property
+            this.message = null;
         } else {
+            // Not editing
             const message:Message = new Message(form.content, null, 'Dummy');
             this._messageService.addMessage(message)
                 .subscribe(
