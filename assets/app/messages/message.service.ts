@@ -1,17 +1,15 @@
 import {Message} from "./message";
 import {Http, Headers} from "angular2/http";
-import {Injectable} from "angular2/core";
+import {Injectable, EventEmitter} from "angular2/core";
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
-// Encapsulates all non-user-interface logic.
 @Injectable()
 export class MessageService {
-	messages: Message[] = [];
+    messages: Message[] = [];
+    messageIsEdit = new EventEmitter<Message>();
+    
+    constructor (private _http: Http) {}
 
-    constructor(private _http: Http) {
-        
-    }
-	
     addMessage(message: Message) {
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type': 'application/json'});
@@ -23,8 +21,9 @@ export class MessageService {
             })
             .catch(error => Observable.throw(error.json()));
     }
-	
+
     getMessages() {
+        // Get messages from the backend save to array
         return this._http.get('http://localhost:3000/message')
             .map(response => {
                 const data = response.json().obj;
@@ -38,11 +37,22 @@ export class MessageService {
             .catch(error => Observable.throw(error.json()));
     }
 
-	editMessage(message: Message) {
-		this.messages[this.messages.indexOf(message)] = new Message('Edited', null, 'Dummy User');
-	}
+    updateMessage(message: Message) {
+        const body = JSON.stringify(message);
+        const headers = new Headers({'Content-Type': 'application/json'});
+        return this._http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: headers})
+            .map(response => response.json())
+            .catch(error => Observable.throw(error.json()));
+    }
 
-	deleteMessage(message: Message) {
-		this.messages.splice(this.messages.indexOf(message), 1);
-	}
+    editMessage(message: Message) {
+        this.messageIsEdit.emit(message);
+    }
+
+    deleteMessage(message: Message) {
+        this.messages.splice(this.messages.indexOf(message), 1);
+        return this._http.delete('http://localhost:3000/message/' + message.messageId)
+            .map(response => response.json())
+            .catch(error => Observable.throw(error.json()));
+    }
 }
