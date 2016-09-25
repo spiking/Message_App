@@ -23,7 +23,7 @@ export class MessageInputComponent implements OnInit {
 
     onSubmit(form:any) {
         if (this.message) {
-            // Edit msg, change field object
+            // Not null, edit msg, change field object
             this.message.content = form.content; 
             this._messageService.updateMessage(this.message)
                 .subscribe(
@@ -33,7 +33,7 @@ export class MessageInputComponent implements OnInit {
             // New object on property
             this.message = null;
         } else {
-            // Not editing
+            // Not null, create msg
             const message:Message = new Message(form.content, null, 'Dummy');
             this._messageService.addMessage(message)
                 .subscribe(

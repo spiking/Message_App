@@ -1,3 +1,6 @@
+import {Router} from 'angular2/router';
+import {AuthService} from './auth.service';
+import {User} from './user';
 import  {Component, OnInit} from "angular2/core";
 import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
 @Component({
@@ -21,12 +24,20 @@ import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
 export class SigninComponent {
     myForm: ControlGroup;
 
-    constructor(private _fb:FormBuilder) {
+    constructor(private _fb:FormBuilder, private _authService: AuthService, private _router: Router) {
 
     }
 
     onSubmit() {
-        console.log(this.myForm.value);
+        const user = new User(this.myForm.value.email, this.myForm.value.password);
+        this._authService.signin(user).subscribe(
+            data => {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.userId);
+                this._router.navigateByUrl('/');
+            },
+            error => console.log(error)
+        );
     }
 
     ngOnInit() {
