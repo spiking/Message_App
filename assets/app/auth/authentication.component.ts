@@ -1,3 +1,5 @@
+import {NgIf} from 'angular2/web_worker/worker';
+import {AuthService} from './auth.service';
 import {Component} from "angular2/core";
 import {SignupComponent} from "./signup.component";
 import {RouteConfig, ROUTER_DIRECTIVES} from "angular2/router";
@@ -10,8 +12,8 @@ import {SigninComponent} from "./signin.component";
             <nav class="col-md-8 col-md-offset-2">
                 <ul class="nav nav-tabs">
                     <li><a [routerLink]="['Signup']">Sign Up</a></li>
-                    <li><a [routerLink]="['Signin']">Sign In</a></li>
-                    <li><a [routerLink]="['Logout']">Log Out</a></li>
+                    <li><a [routerLink]="['Signin']" *ngIf="!isLoggedIn()">Sign In</a></li>
+                    <li><a [routerLink]="['Logout']" *ngIf="isLoggedIn()">Log Out</a></li>
                 </ul>
             </nav>
         </header>
@@ -37,5 +39,11 @@ import {SigninComponent} from "./signin.component";
     {path: '/logout', name: 'Logout', component: LogoutComponent},
 ])
 export class AuthenticationComponent {
+    constructor (private _authService: AuthService) {
 
+    }
+
+    isLoggedIn() {
+        return this._authService.isLoggedIn();
+    }
 }

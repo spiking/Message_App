@@ -24,10 +24,11 @@ export class AuthService {
     }
     
     logout() {
-        // localStorage.clear();
+        // Clear userId and token
+        localStorage.clear();
     }
     
     isLoggedIn() {
-        // return localStorage.getItem('token') !== null;
+        return localStorage.getItem('token') !== null;
     }
 }
