@@ -1,3 +1,4 @@
+import {ErrorService} from '../../errors/error.service';
 import {Router} from 'angular2/router';
 import {AuthService} from './auth.service';
 import {User} from './user';
@@ -24,7 +25,7 @@ import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
 export class SigninComponent {
     myForm: ControlGroup;
 
-    constructor(private _fb:FormBuilder, private _authService: AuthService, private _router: Router) {
+    constructor(private _fb:FormBuilder, private _authService: AuthService, private _router: Router, private _errorService: ErrorService) {
 
     }
 
@@ -37,7 +38,7 @@ export class SigninComponent {
                 localStorage.setItem('userId', data.userId);
                 this._router.navigateByUrl('/');
             },
-            error => console.log(error)
+            error => this._errorService.handleError(error)
         );
     }
 

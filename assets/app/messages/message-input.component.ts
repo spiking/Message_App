@@ -1,3 +1,4 @@
+import {ErrorService} from '../../errors/error.service';
 import {Component, OnInit} from "angular2/core";
 import {Message} from "./message";
 import {MessageService} from "./message.service";
@@ -19,7 +20,7 @@ import {MessageService} from "./message.service";
 export class MessageInputComponent implements OnInit {
     message: Message = null;
 
-    constructor(private _messageService: MessageService) {}
+    constructor(private _messageService: MessageService, private _errorService: ErrorService) {}
 
     onSubmit(form:any) {
         if (this.message) {
@@ -28,7 +29,7 @@ export class MessageInputComponent implements OnInit {
             this._messageService.updateMessage(this.message)
                 .subscribe(
                     data => console.log(data),
-                    error => console.error(error)
+                    error => this._errorService.handleError(error)
                 );
             // New object on property
             this.message = null;
@@ -41,7 +42,7 @@ export class MessageInputComponent implements OnInit {
                         console.log(data);
                         this._messageService.messages.push(data);
                     },
-                    error => console.error(error)
+                    error => this._errorService.handleError(error)
                 );
         }
     }

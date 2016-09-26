@@ -1,3 +1,4 @@
+import {ErrorService} from '../../errors/error.service';
 import {AuthService} from './auth.service';
 import {User} from './user';
 import  {Component, OnInit} from "angular2/core";
@@ -31,7 +32,7 @@ import {FormBuilder, ControlGroup, Validators, Control} from "angular2/common";
 export class SignupComponent implements OnInit {
     myForm: ControlGroup;
 
-    constructor(private _fb:FormBuilder, private _authService: AuthService) {
+    constructor(private _fb:FormBuilder, private _authService: AuthService, private _errorService: ErrorService) {
 
     }
 
@@ -40,7 +41,7 @@ export class SignupComponent implements OnInit {
         
         this._authService.signup(user).subscribe(
             data => console.log(data),
-            error => console.log(error)
+            error => this._errorService.handleError(error)
         )
     }
 

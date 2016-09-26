@@ -1,3 +1,4 @@
+import {ErrorComponent} from './errors/error.component';
 import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from "angular2/router";
 import {MessagesComponent} from "./messages/messages.component";
@@ -10,8 +11,9 @@ import {HeaderComponent} from "./header.component";
 					<my-header></my-header>
 					<router-outlet></router-outlet>
 			<div>
+			<my-error></my-error>
     `,
-		directives: [ROUTER_DIRECTIVES, HeaderComponent]
+		directives: [ROUTER_DIRECTIVES, HeaderComponent, ErrorComponent]
 })
 @RouteConfig([
 	{path: '/', name: 'Messages', component: MessagesComponent, useAsDefault: true},
