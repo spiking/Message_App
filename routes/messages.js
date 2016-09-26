@@ -5,8 +5,10 @@ var jwt = require('jsonwebtoken');
 // Mongoose modules
 var Message = require('../models/message');
 var User = require('../models/user');
+
 // Exec will execute the combined query then follow up with callback function (error, doc) 
 router.get('/', function(req, res, next) {
+    // Fetch user, firstname
     Message.find()
         .populate('user', 'firstName')
         .exec(function(err, docs) {
@@ -37,7 +39,6 @@ router.use('/', function(req, res, next) {
 
 // Post msg to backend
 
-
 router.post('/', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     User.findById(decoded.user._id, function(err, doc) {
@@ -47,10 +48,12 @@ router.post('/', function(req, res, next) {
                 error: err
             });
         }
+
         var message = new Message({
             content: req.body.content,
             user: doc
         });
+
         message.save(function(err, result) {
             if (err) {
                 return res.status(404).json({
@@ -58,6 +61,7 @@ router.post('/', function(req, res, next) {
                     error: err
                 });
             }
+
             doc.messages.push(result);
             doc.save();
             res.status(201).json({
@@ -75,26 +79,33 @@ router.post('/', function(req, res, next) {
 router.patch('/:id', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     Message.findById(req.params.id, function(err, doc) {
+
         if (err) {
             return res.status(404).json({
                 title: 'An error occurred',
                 error: err
             });
         }
+        // No document received
         if (!doc) {
             return res.status(404).json({
                 title: 'No message found',
                 error: { message: 'Message could not be found' }
             });
         }
+
         console.log(doc.user);
         console.log(decoded.user);
+
+        // User token not correct, not allowed to change msg
+
         if (doc.user != decoded.user._id) {
             return res.status(401).json({
                 title: 'Not Authorized',
                 error: { message: 'Message created by other user' }
             });
         }
+
         doc.content = req.body.content;
         doc.save(function(err, result) {
             if (err) {
@@ -116,24 +127,29 @@ router.patch('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     Message.findById(req.params.id, function(err, doc) {
+
         if (err) {
             return res.status(404).json({
                 title: 'An error occurred',
                 error: err
             });
         }
+        // No document received
         if (!doc) {
             return res.status(404).json({
                 title: 'No message found',
                 error: { message: 'Message could not be found' }
             });
         }
+
+        // User token not correct, not allowed delete msg
         if (doc.user != decoded.user._id) {
             return res.status(401).json({
                 title: 'Not Authorized',
                 error: { message: 'Message created by other user' }
             });
         }
+
         doc.remove(function(err, result) {
             if (err) {
                 return res.status(404).json({

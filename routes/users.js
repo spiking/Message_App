@@ -13,6 +13,7 @@ router.post('/', function(req, res, next) {
         password: passwordHash.generate(req.body.password),
         email: req.body.email
     });
+
     user.save(function(error, result) {
         if (error) {
             return res.status(404).json({
@@ -20,6 +21,7 @@ router.post('/', function(req, res, next) {
                 error: error
             });
         }
+        
         res.status(200).json({
             message: 'Success',
             obj: result
